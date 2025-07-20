@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,55 +7,43 @@ import {
   StatusBar,
   SafeAreaView,
   ScrollView,
-  Alert, Image,
+  Alert,
+  Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import logo from '../../Assets/logos.png';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Fonts from '../../Fonts/Fonts';
 import Colors from '../../Colors/Colors';
-const EmergencyContactScreen = ({navigation}) => {
-  const [contacts, setContacts] = useState([
-    {
-      id: 1,
-      name: 'Priyanka .S',
-      contactNo: '9345845628',
-      initial: 'P',
-      color: '#FF6B6B',
-    },
-    {
-      id: 2,
-      name: 'Dinesh Kumar',
-      contactNo: '9234567854',
-      initial: 'D',
-      color: '#4ECDC4',
-    },
-    {
-      id: 3,
-      name: 'Selva Kumar',
-      contactNo: '9862547893',
-      initial: 'S',
-      color: '#FFE66D',
-    },
-    {
-      id: 4,
-      name: 'Kaviya',
-      contactNo: '9367458923',
-      initial: 'K',
-      color: '#FF8E53',
-    },
-  ]);
+import { EmergencyAPI } from '../APICall/EmergencyFlowApiCall'; // Import API call
 
+const EmergencyContactScreen = ({ navigation }) => {
+  const [profileData, setProfileData] = useState(null);
+  const [contacts, setContacts] = useState([]);
+  
+
+  // Fetch emergency contacts using the API
+  useEffect(() => {
+       const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYjNkZjgzMjM0ZGFkYmEzZmM0ZTA3MTJkMGE2Y2MzZmY4NGQzYzVmM2IxYTQ3NWY1YzZkNjE2YjQ5N2U5YzU1M2Y3NDkzNTkzM2RiMzFkNzEiLCJpYXQiOjE3NTIwNTgyMjUuMjgwODM1LCJuYmYiOjE3NTIwNTgyMjUuMjgwODM4LCJleHAiOjE3ODM1OTQyMjUuMjQ2Mzg2LCJzdWIiOiIyIiwic2NvcGVzIjpbXX0.OSU8CyIgsr95JlHCaPtt4AXBrFW9LElZw97mRPuwpdt8AUgk_mXu6Simd84igrulLdia3CGhEz4jwA4yvje-o94aEyycErWocPt-02TcUgpCGUarFfmHXzdykBnG9P9C7-7T1oy_GtaXmB06OrxwpK8HW0u-k89b2NbsJMaFGm1MD9bcUa0tWoj74hEGqC_5ja1yznmrryqxa3EcnV21TsLbYgA5h9oAic9JK_UkHz9Zx0b8ob1FQJFwkgtWiUJqEzg9qlUDf5jP0nDUdv3_qXa2_Gat31ME5gq6JmApXFL0JrI_9ZgUEp9m_F_r2tpX6Sl8Gzr0_34h-t285C3db0o0-PQRLsyABvJFd5UW0spYsMZwcjL_yXfVN93YnQC1ti6Bw7NHxXiHxVubSK-UaJVRaEnFRclVGNxHNUT_VXj8zqxyDUtknHqc7rz3nZuwAhxo54PUwPnuTRO8k9zQaMhU7sIvfMhPsr-5zHGlFkClOo4CqcwVHI5i4SG42TlyJMZIdP-_cLLH-U6pD7NgKdqCgJkZlAVKLOI-KNo4HmKf4BLCAZKdA05YrOETg5S6R7fBcE06DxBXWqLJPVLWnZUk_S7FAxNfL5Cne3DjmQN1qnv6QJtfxneXjAFypSOaH2Fpet_-MsA6aJmZvvYo0eAP7L2nQ_ZdX5ffa3P1M08'; // Add the token here
+
+    EmergencyAPI(token)
+      .then((data) => {
+        setProfileData(data.data);
+        setContacts(data.data); // Set contacts data here
+      })
+      .catch((error) => {
+        console.error('Error fetching profile data:', error);
+      });
+  }, []);
+
+  // Navigate back
   const handleBack = () => {
-    console.log('Back pressed');
-    // Add navigation back logic
+    navigation.goBack();
   };
 
+  // Add a new emergency contact
   const handleAddContact = () => {
     console.log('Add contact pressed');
     Alert.alert(
@@ -69,14 +57,14 @@ const EmergencyContactScreen = ({navigation}) => {
         {
           text: 'Add',
           onPress: () => {
-            // Navigate to add contact screen or show modal
-            console.log('Navigate to add contact screen');
+            navigation.navigate('AddEmergencyContact'); // Navigate to the Add contact screen
           },
         },
       ],
     );
   };
 
+  // Edit an existing emergency contact
   const handleEditContact = (contact) => {
     console.log('Edit contact:', contact);
     Alert.alert(
@@ -90,14 +78,14 @@ const EmergencyContactScreen = ({navigation}) => {
         {
           text: 'Edit',
           onPress: () => {
-            // Navigate to edit contact screen
-            console.log('Navigate to edit contact screen for:', contact.name);
+            navigation.navigate('EditEmergencyContact', { contactId: contact.id });
           },
         },
       ],
     );
   };
 
+  // Delete an emergency contact
   const handleDeleteContact = (contactId) => {
     Alert.alert(
       'Delete Contact',
@@ -111,113 +99,93 @@ const EmergencyContactScreen = ({navigation}) => {
           text: 'Delete',
           style: 'destructive',
           onPress: () => {
-            setContacts(prev => prev.filter(contact => contact.id !== contactId));
+            setContacts((prev) => prev.filter(contact => contact.id !== contactId)); // Remove contact from state
           },
         },
       ],
     );
   };
 
-  const renderContactItem = (contact) => (
-<TouchableOpacity>
-    <View key={contact.id} style={styles.contactItem}>
+  // Render individual contact item
+const renderContactItem = (contact) => (
+  <TouchableOpacity key={contact.id}>
+    <View style={styles.contactItem}>
       <View style={styles.contactContent}>
-        <View style={[styles.avatarContainer, {backgroundColor: contact.color}]}>
-          <Text style={styles.avatarText}>{contact.initial}</Text>
-        </View>
-        
-        <View style={styles.contactInfo}>
-          <Text style={styles.contactName}>{contact.name}</Text>
-          <Text style={styles.contactNumber}>
-            Contact no : {contact.contactNo}
+        {/* Avatar: First letter of name as initial */}
+        <View style={[styles.avatarContainer, { backgroundColor: contact.color || '#4F7DB6' }]}>
+          <Text style={styles.avatarText}>
+            {contact.name && contact.name.length > 0 ? contact.name.charAt(0).toUpperCase() : '?'}
           </Text>
         </View>
+
+        {/* Contact Information */}
+        <View style={styles.contactInfo}>
+          <Text style={styles.contactName}>{contact.name}</Text>
+          <Text style={styles.contactNumber}>Contact no : {contact.mobile}</Text>
+        </View>
       </View>
-      
-      <TouchableOpacity
-        style={styles.editButton}
-        onPress={() => handleEditContact(contact)}>
+
+      {/* Edit Button */}
+      <TouchableOpacity style={styles.editButton} onPress={() => handleEditContact(contact)}>
         <Icon name="edit" size={16} color="#7518AA" />
         <Text style={styles.editText}>Edit</Text>
       </TouchableOpacity>
     </View>
-</TouchableOpacity>
-  );
+  </TouchableOpacity>
+);
+
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={Colors.statusBar} />
 
       {/* Header with Gradient */}
-  <LinearGradient
-             colors={['#ffffff', '#C3DFFF']}
-      start={{ x: 0, y: 0.3 }}
-      end={{ x: 0, y: 0 }}
-              style={styles.topBackground}
-            >
-      <View style={styles.header}>
-                              <Image source={logo} style={styles.logo} />
-                              <View style={styles.greetingContainer}>
-                                <Text style={styles.greeting}>Hi, Welcome</Text>
-                                <Text style={styles.userName}>Janmani Kumar</Text>
-                              </View>
-                              <TouchableOpacity
-                                style={[styles.notificationButton, { right: hp('2%') }]}
-                              >
-                                <Icon name="notifications-on" size={24} color="black" />
-                              </TouchableOpacity>
-                              <TouchableOpacity
-                                style={[styles.notificationButton, { backgroundColor: 'red' }]}
-                              >
-                                <MaterialCommunityIcons
-                                  name="alarm-light-outline"
-                                  size={24}
-                                  color="white"
-                                />
-                              </TouchableOpacity>
-                            </View>
+      <LinearGradient colors={['#ffffff', '#C3DFFF']} start={{ x: 0, y: 0.3 }} end={{ x: 0, y: 0 }} style={styles.topBackground}>
+        <View style={styles.header}>
+          <Image source={logo} style={styles.logo} />
+          <View style={styles.greetingContainer}>
+            <Text style={styles.greeting}>Hi, Welcome</Text>
+            <Text style={styles.userName}>Janmani Kumar</Text>
+          </View>
+          <TouchableOpacity style={[styles.notificationButton, { right: hp('2%') }]}>
+            <Icon name="notifications-on" size={24} color="black" />
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.notificationButton, { backgroundColor: 'red' }]}>
+            <MaterialCommunityIcons name="alarm-light-outline" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.titleSection}>
           <View style={styles.titleRow}>
-          <View style={styles.titleRow}>
-  <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-    <Icon name="chevron-left" size={30} color="#000" />
-  </TouchableOpacity>
-  <Text style={styles.pageTitle}>Emergency Contact</Text>
-</View>
-
-            <TouchableOpacity
-              style={styles.addContactButton}
-              onPress={handleAddContact}>
+            <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+              <Icon name="chevron-left" size={30} color="#000" />
+            </TouchableOpacity>
+            <Text style={styles.pageTitle}>Emergency Contact</Text>
+            <TouchableOpacity style={styles.addContactButton} onPress={handleAddContact}>
               <Icon name="add" size={16} color="#FFFFFF" />
               <Text style={styles.addContactText}>Add Contact</Text>
             </TouchableOpacity>
           </View>
         </View>
-    
 
-      {/* Content */}
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <View style={styles.contactsList}>
-          {contacts.map(contact => renderContactItem(contact))}
-        </View>
-
-        {/* Empty State */}
-        {contacts.length === 0 && (
-          <View style={styles.emptyState}>
-            <Icon name="contacts" size={64} color="#D1D5DB" />
-            <Text style={styles.emptyStateTitle}>No Emergency Contacts</Text>
-            <Text style={styles.emptyStateText}>
-              Add emergency contacts to help in case of urgent situations
-            </Text>
-            <TouchableOpacity
-              style={styles.addFirstContactButton}
-              onPress={handleAddContact}>
-              <Text style={styles.addFirstContactText}>Add First Contact</Text>
-            </TouchableOpacity>
+        {/* Content */}
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          <View style={styles.contactsList}>
+            {contacts.length > 0 ? (
+              contacts.map((contact) => renderContactItem(contact))
+            ) : (
+              <View style={styles.emptyState}>
+                <Icon name="contacts" size={64} color="#D1D5DB" />
+                <Text style={styles.emptyStateTitle}>No Emergency Contacts</Text>
+                <Text style={styles.emptyStateText}>Add emergency contacts to help in case of urgent situations</Text>
+                <TouchableOpacity style={styles.addFirstContactButton} onPress={handleAddContact}>
+                  <Text style={styles.addFirstContactText}>Add First Contact</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
-        )}
-      </ScrollView>
-          </LinearGradient>
+        </ScrollView>
+      </LinearGradient>
     </SafeAreaView>
   );
 };
@@ -350,7 +318,7 @@ const styles = StyleSheet.create({
   avatarContainer: {
     width: 40,
     height: 40,
-    borderRadius: 24,
+    borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 16,

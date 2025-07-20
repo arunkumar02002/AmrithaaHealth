@@ -19,28 +19,26 @@ import {
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Fonts from '../../Fonts/Fonts';
 import Colors from '../../Colors/Colors';
-const ProfileDisplayScreen = ({navigation}) => {
-  const profileData = {
-    name: 'Jeswanth Kumar',
-    dateOfBirth: '03/06/2002',
-    email: 'jeswanthkumar@gmail.com',
-    mobile: '9345565448',
-    age: '22',
-    gender: 'Male',
-    profileImage: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face&auto=format',
-  };
+import { UserProfileAPI } from '../APICall/ProfileApi'; // API call
+import  { useState, useEffect } from 'react';
+import { Image_URL } from '../Config';
 
-  const familyMembers = [
-    {
-      id: 1,
-      name: 'Seetha',
-      dateOfBirth: '03/06/2002',
-      email: 'jeswanthkumar@gmail.com',
-      mobile: '9345565448',
-      age: '22',
-      gender: 'Male',
-    },
-  ];
+
+const ProfileDisplayScreen = ({navigation}) => {
+   const [profileData, setProfileData] = useState(null);
+   const [familyMembers, setFamilyMembers] = useState([]);
+
+  useEffect(() => {
+    const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYjNkZjgzMjM0ZGFkYmEzZmM0ZTA3MTJkMGE2Y2MzZmY4NGQzYzVmM2IxYTQ3NWY1YzZkNjE2YjQ5N2U5YzU1M2Y3NDkzNTkzM2RiMzFkNzEiLCJpYXQiOjE3NTIwNTgyMjUuMjgwODM1LCJuYmYiOjE3NTIwNTgyMjUuMjgwODM4LCJleHAiOjE3ODM1OTQyMjUuMjQ2Mzg2LCJzdWIiOiIyIiwic2NvcGVzIjpbXX0.OSU8CyIgsr95JlHCaPtt4AXBrFW9LElZw97mRPuwpdt8AUgk_mXu6Simd84igrulLdia3CGhEz4jwA4yvje-o94aEyycErWocPt-02TcUgpCGUarFfmHXzdykBnG9P9C7-7T1oy_GtaXmB06OrxwpK8HW0u-k89b2NbsJMaFGm1MD9bcUa0tWoj74hEGqC_5ja1yznmrryqxa3EcnV21TsLbYgA5h9oAic9JK_UkHz9Zx0b8ob1FQJFwkgtWiUJqEzg9qlUDf5jP0nDUdv3_qXa2_Gat31ME5gq6JmApXFL0JrI_9ZgUEp9m_F_r2tpX6Sl8Gzr0_34h-t285C3db0o0-PQRLsyABvJFd5UW0spYsMZwcjL_yXfVN93YnQC1ti6Bw7NHxXiHxVubSK-UaJVRaEnFRclVGNxHNUT_VXj8zqxyDUtknHqc7rz3nZuwAhxo54PUwPnuTRO8k9zQaMhU7sIvfMhPsr-5zHGlFkClOo4CqcwVHI5i4SG42TlyJMZIdP-_cLLH-U6pD7NgKdqCgJkZlAVKLOI-KNo4HmKf4BLCAZKdA05YrOETg5S6R7fBcE06DxBXWqLJPVLWnZUk_S7FAxNfL5Cne3DjmQN1qnv6QJtfxneXjAFypSOaH2Fpet_-MsA6aJmZvvYo0eAP7L2nQ_ZdX5ffa3P1M08'; // Add the token here
+    UserProfileAPI(token)
+      .then((data) => {
+        setProfileData(data.data);
+        setFamilyMembers(data.data.familyDetails); 
+      })
+      .catch((error) => {
+        console.error('Error fetching profile data:', error);
+      });
+  }, []);
 
   const handleEdit = () => {
     console.log('Edit profile pressed');
@@ -68,7 +66,7 @@ const ProfileDisplayScreen = ({navigation}) => {
     <View style={styles.profileCard}>
       {isMainProfile && (
         <View style={styles.profileHeader}>
-          <Image source={{uri: data.profileImage}} style={styles.avatar} />
+          <Image source={{ uri: `${Image_URL}${data.profile_photo}` }} style={styles.avatar} />
           <View style={styles.profileInfo}>
             <Text style={styles.profileName}>{data.name}</Text>
             <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
@@ -86,7 +84,7 @@ const ProfileDisplayScreen = ({navigation}) => {
           </View>
         )}
         
-        {renderInfoRow('Date of Birth', data.dateOfBirth)}
+        {renderInfoRow('Date of Birth', data.dob)}
         {renderInfoRow('Email Id', data.email)}
         {renderInfoRow('Mobile Number', data.mobile)}
         
@@ -101,6 +99,21 @@ const ProfileDisplayScreen = ({navigation}) => {
       </View>
     </View>
   );
+   if (!profileData) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="light-content" backgroundColor={Colors.statusBar} />
+        <LinearGradient colors={['#ffffff', '#C3DFFF']} start={{ x: 0, y: 0.3 }} end={{ x: 0, y: 0 }} style={styles.topBackground}>
+          <View style={styles.header}>
+            <Image source={logo} style={styles.logo} />
+            <View style={styles.greetingContainer}>
+              <Text style={styles.greeting}>Loading...</Text>
+            </View>
+          </View>
+        </LinearGradient>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -116,7 +129,7 @@ const ProfileDisplayScreen = ({navigation}) => {
                        <Image source={logo} style={styles.logo} />
                        <View style={styles.greetingContainer}>
                          <Text style={styles.greeting}>Hi, Welcome</Text>
-                         <Text style={styles.userName}>Janmani Kumar</Text>
+                        <Text style={styles.userName}>{profileData.name}</Text>
                        </View>
                        <TouchableOpacity
                          style={[styles.notificationButton, { right: hp('2%') }]}
