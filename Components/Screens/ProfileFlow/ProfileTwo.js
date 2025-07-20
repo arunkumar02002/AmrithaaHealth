@@ -19,7 +19,7 @@ import {
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Fonts from '../../Fonts/Fonts';
 import Colors from '../../Colors/Colors';
-import { UserProfileAPI } from '../APICall/ProfileApi'; // API call
+import { UserProfileAPI } from '../APICall/ProfileApi'; // API calls
 import  { useState, useEffect } from 'react';
 import { Image_URL } from '../Config';
 

@@ -17,7 +17,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Fonts from '../../Fonts/Fonts';
 import Colors from '../../Colors/Colors';
-import { EmergencyAPI } from '../APICall/EmergencyFlowApiCall'; // Import API call
+import { EmergencyAPI } from '../APICall/EmergencyFlowApiCall'; // Import API callhello
 
 const EmergencyContactScreen = ({ navigation }) => {
   const [profileData, setProfileData] = useState(null);
