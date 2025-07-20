@@ -21,7 +21,7 @@ export default function App() {
       <Stack.Navigator
         initialRouteName="MainApp"
         screenOptions={{ headerShown: false }}
-      >
+      >    
         <Stack.Screen name="MainApp" component={BottomTabs} />
         <Stack.Screen name="Login1" component={Login1} />
         <Stack.Screen name="Login2" component={Login2} />

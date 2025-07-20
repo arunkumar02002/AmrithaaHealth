@@ -12,7 +12,7 @@ export const EmergencyAPI = async (token) => {
           'Authorization': `Bearer ${token}`,  
           'Content-Type': 'application/json',  
         },
-       
+        
       }
     );
     return response.data;

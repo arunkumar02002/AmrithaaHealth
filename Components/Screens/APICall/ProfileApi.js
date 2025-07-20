@@ -14,6 +14,7 @@ export const UserProfileAPI = async (token) => {
         },
       }
     );
+     
     return response.data;
   } catch (error) {
     console.log('User Profile API ERROR:', {

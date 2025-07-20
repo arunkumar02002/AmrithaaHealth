@@ -22,7 +22,7 @@ import { EmergencyAPI } from '../APICall/EmergencyFlowApiCall'; // Import API ca
 const EmergencyContactScreen = ({ navigation }) => {
   const [profileData, setProfileData] = useState(null);
   const [contacts, setContacts] = useState([]);
-  
+     
 
   // Fetch emergency contacts using the API
   useEffect(() => {

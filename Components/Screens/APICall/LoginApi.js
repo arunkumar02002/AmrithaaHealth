@@ -26,7 +26,7 @@ export const sendOtp = async (mobile) => {
   }
 };
 
-
+ 
 export const verifyOtp = async (mobile, otp) => {
   try {
     const response = await axios.post(`${BASE_URL}/otp/sms/verify`, {
